@@ -38,6 +38,21 @@ def crossWin():
     if board[6] == board[4] == board[2] != "-":
         winner = board[6]
 
+def aiMove(board):
+    bestScore = -10000
+    for i in range(9):
+        if board[i] == "-":
+            score = minimax(board)
+            if (score > bestScore):
+                bestScore = score
+                move = i
+    board[move] = "O"
+
+
+def miniMax(board):
+
+
+
 
 while gameNotOver:
     createBoard(board)
