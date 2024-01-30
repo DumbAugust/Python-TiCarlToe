@@ -2,7 +2,7 @@ board = ["-","-","-",
          "-","-","-",
          "-","-","-"]
 
-
+depht = 9
 player = "X"
 winner = None
 gameNotOver = True 
@@ -16,9 +16,13 @@ def createBoard(board):
 # Function that takes a number input and places a X on the tictactoe grid according to your choosen number
 # Uses recursion if to repeat the function untill the player chooses a number which is not taken.
 def move(board):
+
+    global depht
+
     inp = int(input("what number do ya want?"))
     if inp >= 1 and inp <= 9 and board[inp - 1] == "-":
         board[inp - 1] = player
+        depht -= 1
     else:
         print("pick another")
         move(board)
@@ -45,41 +49,73 @@ def crossWin():
     if board[6] == board[4] == board[2] != "-":
         winner = board[6]
 
+# Checks the final results
+def whoIsWinner():
+
+    global depht
+    global winner
+
+    if depht == 0:
+        return "Tie"
+    else:
+        crossWin()
+        verWin()
+        horiWin()
+        return winner
+
+# Dictonary to check winner values
+scores = {"X": -1,
+          "O": 1,
+          "Tie": 0}
+
+
 # Algoritm to check what move is the most optimal move for the enemy bot to use, uses a minmax function
-def aiMove(board):
-    bestScore = -10000
-    for i in range(9):
-        if board[i] == "-":
-            score = minMax(board)
-            if (score > bestScore):
-                bestScore = score
-                move = i
-    board[move] = "O"
+def miniMaxMove(board, aiPlayer, depth):
+    result = whoIsWinner()
+    if (result != None):
+        score = scores(result)
+        return score
+    
+    if aiPlayer:
+        maxScore = -1000
+        for i in range(9):
+            if board[i] == "-":
+                board[i] == "O"
+                score = miniMaxMove(board, False, depth - 1)
+                board[i] == "-"
+                if (score > maxScore):
+                    maxScore = score
+                    move = i
+        return move
+    else:
+        maxScore = 1000
+        for i in range(9):
+            if board[i] == "-":
+                board[i] == "O"
+                score = miniMaxMove(board, False, depth - 1)
+                board[i] == "-"
+                if (score < maxScore):
+                    maxScore = score
+                    move = i
+        return move
 
-# The minMax function used in the aiMove function to calculate which move is the best.
-def minMax(board):
-    return 1
 
-# A infinite loop that continues untill a winner is defined
+# A loop that continues until the variable gameNotOver becomes false
 while gameNotOver:
     createBoard(board)
     move(board)
-    horiWin()
-    verWin()
-    crossWin()
+    winner = whoIsWinner()
     if winner != None:
         createBoard(board)
-        print(winner + " Is the winner")
+        print(whoIsWinner() + " Is the winner")
         gameNotOver = False
-        createBoard(board)
 
     #Find a more efficent process
     createBoard(board)
-    aiMove(board)
-    horiWin()
-    verWin()
-    crossWin()
+    miniMaxMove(board, True, depht)
+    winner = whoIsWinner()
+    print(depht)
     if winner != None:
         createBoard(board)
-        print(winner + " Is the winner")
+        print(whoIsWinner() + " Is the winner")
         gameNotOver = False
