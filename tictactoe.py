@@ -2,7 +2,7 @@ board = ["-","-","-",
          "-","-","-",
          "-","-","-"]
 
-depht = 9
+depth = 9
 player = "X"
 winner = None
 gameNotOver = True 
@@ -17,12 +17,12 @@ def createBoard(board):
 # Uses recursion if to repeat the function untill the player chooses a number which is not taken.
 def move(board):
 
-    global depht
+    global depth
 
     inp = int(input("what number do ya want?"))
     if inp >= 1 and inp <= 9 and board[inp - 1] == "-":
         board[inp - 1] = player
-        depht -= 1
+        depth -= 1
     else:
         print("pick another")
         move(board)
@@ -52,10 +52,10 @@ def crossWin():
 # Checks the final results
 def whoIsWinner():
 
-    global depht
+    global depth
     global winner
 
-    if depht == 0:
+    if depth == 0:
         return "Tie"
     else:
         crossWin()
@@ -71,18 +71,22 @@ scores = {"X": -1,
 
 # Algoritm to check what move is the most optimal move for the enemy bot to use, uses a minmax function
 def miniMaxMove(board, aiPlayer, depth):
+
+    global scores
+    global winner
+
     result = whoIsWinner()
     if (result != None):
-        score = scores(result)
+        score = scores[result]
         return score
     
     if aiPlayer:
         maxScore = -1000
         for i in range(9):
             if board[i] == "-":
-                board[i] == "O"
+                board[i] = "O"
                 score = miniMaxMove(board, False, depth - 1)
-                board[i] == "-"
+                board[i] = "-"
                 if (score > maxScore):
                     maxScore = score
                     move = i
@@ -91,9 +95,9 @@ def miniMaxMove(board, aiPlayer, depth):
         maxScore = 1000
         for i in range(9):
             if board[i] == "-":
-                board[i] == "O"
-                score = miniMaxMove(board, False, depth - 1)
-                board[i] == "-"
+                board[i] = "X"
+                score = miniMaxMove(board, True, depth - 1)
+                board[i] = "-"
                 if (score < maxScore):
                     maxScore = score
                     move = i
@@ -112,9 +116,9 @@ while gameNotOver:
 
     #Find a more efficent process
     createBoard(board)
-    miniMaxMove(board, True, depht)
+    board[miniMaxMove(board, True, depth)] = "O"
     winner = whoIsWinner()
-    print(depht)
+    print(depth)
     if winner != None:
         createBoard(board)
         print(whoIsWinner() + " Is the winner")
