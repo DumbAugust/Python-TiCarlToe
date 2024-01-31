@@ -78,7 +78,9 @@ def miniMaxMove(board, aiPlayer, depth):
     result = whoIsWinner()
     if (result != None):
         score = scores[result]
+        print(score)
         return score
+    move = 0
     
     if aiPlayer:
         maxScore = -1000
@@ -87,6 +89,7 @@ def miniMaxMove(board, aiPlayer, depth):
                 board[i] = "O"
                 score = miniMaxMove(board, False, depth - 1)
                 board[i] = "-"
+                winner = None
                 if (score > maxScore):
                     maxScore = score
                     move = i
@@ -98,6 +101,7 @@ def miniMaxMove(board, aiPlayer, depth):
                 board[i] = "X"
                 score = miniMaxMove(board, True, depth - 1)
                 board[i] = "-"
+                winner = None
                 if (score < maxScore):
                     maxScore = score
                     move = i
