@@ -50,18 +50,16 @@ def crossWin():
         winner = board[6]
 
 # Checks the final results
-def whoIsWinner():
+def whoIsWinner(depth):
 
-    global depth
     global winner
 
+    crossWin()
+    verWin()
+    horiWin()
     if depth == 0:
-        return "Tie"
-    else:
-        crossWin()
-        verWin()
-        horiWin()
-        return winner
+        winner = "Tie"
+    return winner
 
 # Dictonary to check winner values
 scores = {"X": -1,
@@ -75,8 +73,8 @@ def miniMaxMove(board, aiPlayer, depth):
     global scores
     global winner
 
-    result = whoIsWinner()
-    if (result != None):
+    result = whoIsWinner(depth)
+    if (depth == 0 or result != None):
         score = scores[result]
         print(score)
         return score
@@ -112,18 +110,18 @@ def miniMaxMove(board, aiPlayer, depth):
 while gameNotOver:
     createBoard(board)
     move(board)
-    winner = whoIsWinner()
+    winner = whoIsWinner(depth)
     if winner != None:
         createBoard(board)
-        print(whoIsWinner() + " Is the winner")
+        print(whoIsWinner(depth) + " Is the winner")
         gameNotOver = False
 
     #Find a more efficent process
     createBoard(board)
     board[miniMaxMove(board, True, depth)] = "O"
-    winner = whoIsWinner()
+    winner = whoIsWinner(depth)
     print(depth)
     if winner != None:
         createBoard(board)
-        print(whoIsWinner() + " Is the winner")
+        print(whoIsWinner(depth) + " Is the winner")
         gameNotOver = False
